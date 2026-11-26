@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+.env
+.DS_Store
+
+# local design tooling, backups and screenshots
+.impeccable/
+
+# design reference screenshot (not part of the site)
+Residential*.png

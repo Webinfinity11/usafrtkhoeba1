@@ -1,0 +1,134 @@
+---
+// Photos live in /public/services; /public/services/card holds 800px copies for the cards
+type Service = {
+  id: string;
+  photo: string;
+  alt: string;
+  title: string;
+  text: string[];
+  params?: { k: string; v: string }[];
+  details: { k: string; v: string }[];
+};
+
+const services: Service[] = [
+  {
+    id: "grounding",
+    photo: "01_grounding_test.webp",
+    alt: "დამიწების კონტურის გამოცდა საზომი ხელსაწყოთი",
+    title: "დამიწების კონტურების გამოცდა",
+    text: [
+      "ვამოწმებთ ელექტრომოწყობილობების დამცავი დამიწების მდგომარეობას მეთოდური მითითებების შესაბამისად. დამცავი დამიწება ადამიანს იცავს ელექტროდენის დარტყმისგან, თუ მოწყობილობის კორპუსზე ძაბვა გაჩნდა. გამოცდით ვადგენთ, მუშაობს თუ არა ეს დაცვა გამართულად. ამით მცირდება ელექტროტრავმის და ხანძრის რისკი.",
+      "მომსახურებას ვახორციელებთ აკრედიტაციის მოწმობის საფუძველზე.",
+    ],
+    details: [],
+  },
+  {
+    id: "noise",
+    photo: "02_noise_measurement.webp",
+    alt: "ბგერის დონის მზომი საწარმოო დანადგართან",
+    title: "ხმაურის დონის ინსტრუმენტული გაზომვა",
+    text: ["საწარმოო, კომერციულ და საცხოვრებელ ობიექტებზე ზუსტად ვზომავთ ხმაურის რეალურ დონეს დეციბელებში."],
+    params: [
+      { k: "LAFmin", v: "ხმაურის მინიმალური დონე" },
+      { k: "LAFmax", v: "ხმაურის მაქსიმალური დონე" },
+      { k: "LAFAV", v: "ხმაურის საშუალო დონე" },
+    ],
+    details: [{ k: "ხელსაწყო", v: "ბგერის დონის მზომი AS824, ს/ნ 6099166" }],
+  },
+  {
+    id: "vibration",
+    photo: "03_vibration_measurement.webp",
+    alt: "ვიბრაციის გაზომვა ვიბრომეტრით ძრავაზე",
+    title: "ვიბრაციის დონის ინსტრუმენტული გაზომვა",
+    text: [
+      "ზუსტად ვაფასებთ ვიბრაციის დონეს, რათა დავიცვათ შენობების მდგრადობა და თანამშრომლების ჯანმრთელობა. გაზომვა გვიჩვენებს, რამდენად შეესაბამება ვიბრაცია დასაშვებ ნორმებს.",
+    ],
+    details: [{ k: "ხელსაწყო", v: "ვიბრომეტრი Benetech GM63A, ს/ნ 2775213" }],
+  },
+];
+---
+
+<section id="services" class="band">
+  <div class="container">
+    <h2 class="h">სერვისები</h2>
+
+    <div class="list">
+      {services.map((s) => (
+        <article class="svc" id={s.id}>
+          <div class="photo">
+            <img
+              src={`/services/card/${s.photo}`}
+              srcset={`/services/card/${s.photo} 800w, /services/${s.photo} 1586w`}
+              sizes="(max-width: 1060px) min(560px, 100vw), 380px"
+              alt={s.alt} width="800" height="500" loading="lazy" decoding="async"
+            />
+          </div>
+
+          <div class="body">
+            <h3>{s.title}</h3>
+            <div class="copy">
+              {s.text.map((t) => <p>{t}</p>)}
+              {s.params && (
+                <>
+                  <p>ვაფიქსირებთ შემდეგ პარამეტრებს:</p>
+                  <dl class="params">
+                    {s.params.map((p) => <div><dt>{p.k}</dt><dd>{p.v}</dd></div>)}
+                  </dl>
+                </>
+              )}
+            </div>
+
+            {s.details.length > 0 && (
+              <div class="meta">
+                {s.details.map((d) => (
+                  <div class="inst"><span>{d.k}</span><b class="tnum">{d.v}</b></div>
+                ))}
+              </div>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .h { margin-bottom: 48px; }
+  .list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: stretch; }
+
+  .svc {
+    display: flex; flex-direction: column;
+    background: #fff; border-radius: 20px; overflow: hidden;
+    border: 1px solid var(--line); box-shadow: 0 24px 48px -40px #021a3366;
+    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+  }
+  @media (hover: hover) and (pointer: fine) { .svc:hover { transform: translateY(-4px); box-shadow: 0 32px 56px -36px #021a3380; } }
+
+  .photo { aspect-ratio: 16 / 10; overflow: hidden; background: var(--navy); border-bottom: 3px solid var(--gold); }
+  .photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s var(--ease); }
+  @media (hover: hover) and (pointer: fine) { .svc:hover .photo img { transform: scale(1.04); } }
+
+  .body { flex: 1; display: flex; flex-direction: column; padding: 28px 28px 26px; }
+  h3 { font-size: 1.22rem; line-height: 1.3; color: var(--navy); margin-bottom: 14px; text-wrap: balance; }
+  .copy p { color: var(--muted); font-size: 0.93rem; line-height: 1.65; text-wrap: pretty; }
+  .copy p + p { margin-top: 10px; }
+
+  .params { display: grid; gap: 6px; margin-top: 12px; }
+  .params div { display: grid; grid-template-columns: 4.8em 1fr; gap: 10px; align-items: baseline; padding: 7px 12px; border-radius: 8px; background: var(--soft); }
+  .params dt { font-size: 0.85rem; font-weight: 800; color: var(--navy); }
+  .params dd { font-size: 0.86rem; color: var(--muted); }
+
+  /* instrument line pinned to the bottom of the card */
+  .meta { margin-top: auto; padding-top: 24px; }
+  .inst { padding-top: 18px; border-top: 1px solid var(--line); }
+  .inst span { display: block; font-size: 0.76rem; color: var(--muted); margin-bottom: 2px; }
+  .inst b { font-size: 0.9rem; color: var(--navy); }
+
+  @media (max-width: 1060px) {
+    .list { grid-template-columns: 1fr; max-width: 560px; margin-inline: auto; }
+  }
+  @media (max-width: 760px) {
+    .h { margin-bottom: 32px; }
+    .body { padding: 24px 22px 22px; }
+  }
+</style>

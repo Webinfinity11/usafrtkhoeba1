@@ -1,0 +1,75 @@
+---
+import Logo from "./Logo.astro";
+const year = new Date().getFullYear();
+
+// Same anchors and labels as the header
+const links = [
+  { href: "#about", label: "ჩვენ შესახებ" },
+  { href: "#services", label: "სერვისები" },
+  { href: "#audience", label: "ვისთვისაა" },
+  { href: "#certificates", label: "სერტიფიკატები" },
+  { href: "#contact", label: "კონტაქტი" },
+];
+---
+
+<footer>
+  <div class="container">
+    <div class="top">
+      <a href="#top" class="brand"><Logo size={40} /> <span>უსაფრთხოება <b>პირველი</b></span></a>
+      <nav aria-label="ქვედა მენიუ">
+        {links.map((l) => <a href={l.href}>{l.label}</a>)}
+      </nav>
+    </div>
+
+    <div class="bottom">
+      <p>© {year} შპს „უსაფრთხოება პირველი“</p>
+      <div class="meta">
+        <a href="tel:+995598335858" class="tnum">598 33 58 58</a>
+        <a href="tel:+995591335858" class="tnum">591 33 58 58</a>
+        <a href="mailto:usafrtkhoeba1@gmail.com">usafrtkhoeba1@gmail.com</a>
+        <a href="#top" class="up" aria-label="ზემოთ">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    background: var(--navy); color: #9fb0c9; font-size: 0.86rem;
+    /* a shallow version of the site's slant, so the footer stays compact */
+    clip-path: polygon(0 28px, 100% 0, 100% 100%, 0 100%);
+    padding: 56px 0 24px; margin-top: 48px;
+  }
+
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 20px 40px; flex-wrap: wrap; padding-bottom: 22px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 800; font-size: 0.98rem; }
+  .brand b { color: var(--gold); }
+
+  nav { display: flex; flex-wrap: wrap; gap: 6px 26px; }
+  nav a { color: #c3cee0; font-weight: 600; transition: color 0.2s; }
+
+  .bottom {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap;
+    padding-top: 18px; border-top: 1px solid #ffffff14;
+  }
+  .meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 22px; }
+  .meta a { color: #c3cee0; transition: color 0.2s; }
+  .up {
+    display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+    border: 1px solid #ffffff26; transition: border-color 0.2s, background 0.2s, color 0.2s;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    nav a:hover, .meta a:hover { color: var(--gold); }
+    .up:hover { background: var(--gold); border-color: var(--gold); color: var(--navy); }
+  }
+
+  @media (max-width: 760px) {
+    footer { padding-top: 48px; margin-top: 32px; }
+    .top, .bottom { flex-direction: column; align-items: flex-start; }
+    nav { gap: 8px 20px; }
+    .meta { gap: 8px 18px; }
+  }
+</style>

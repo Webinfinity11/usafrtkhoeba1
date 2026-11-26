@@ -1,0 +1,10 @@
+---
+interface Props { size?: number }
+const { size = 48 } = Astro.props;
+// logo-mark is a transparent, cropped copy of /public/logo.png (aspect ≈ 923:1163)
+---
+
+<picture>
+  <source srcset="/logo-mark.webp" type="image/webp" />
+  <img src="/logo-mark.png" alt="" width={Math.round(size * 0.794)} height={size} decoding="async" />
+</picture>

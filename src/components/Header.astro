@@ -1,0 +1,98 @@
+---
+import Logo from "./Logo.astro";
+
+const links = [
+  { href: "#about", label: "ჩვენ შესახებ" },
+  { href: "#services", label: "სერვისები" },
+  { href: "#audience", label: "ვისთვისაა" },
+  { href: "#certificates", label: "სერტიფიკატები" },
+  { href: "#contact", label: "კონტაქტი" },
+];
+---
+
+<header class="nav">
+  <div class="bar">
+    <a href="#top" class="logo" aria-label="მთავარი"><Logo size={46} /> <span>უსაფრთხოება <b>პირველი</b></span></a>
+    <button class="burger" aria-label="მენიუ" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span>
+    </button>
+    <nav class="links" id="nav-links">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; transition: transform 0.35s var(--ease); }
+
+  .bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px max(16px, calc((100% - 1160px) / 2));
+    background: #fff; border-bottom: 1px solid var(--line);
+    transition: box-shadow 0.3s;
+  }
+  .nav.scrolled .bar { box-shadow: 0 4px 16px -10px #021a3340; }
+  .logo { display: flex; gap: 10px; align-items: center; font-weight: 800; color: var(--navy); font-size: 1.02rem; line-height: 1.1; }
+  .logo b { color: var(--gold-deep); }
+
+  .links { display: flex; gap: 28px; align-items: center; font-size: 0.92rem; }
+  .links a:not(.btn) { color: var(--navy); font-weight: 600; position: relative; transition: color 0.2s; }
+  .links a:not(.btn)::after {
+    content: ""; position: absolute; left: 0; bottom: -6px; height: 2px; width: 100%;
+    background: var(--gold); transform: scaleX(0); transform-origin: right;
+    transition: transform 0.35s var(--ease);
+  }
+  .links a.active { color: var(--gold-deep); }
+  .links a.active::after { transform: scaleX(1); transform-origin: left; }
+  @media (hover: hover) and (pointer: fine) {
+    .links a:not(.btn):hover { color: var(--gold-deep); }
+    .links a:not(.btn):hover::after { transform: scaleX(1); transform-origin: left; }
+  }
+
+  .burger { display: none; background: none; border: 0; width: 36px; height: 36px; cursor: pointer; position: relative; }
+  .burger span { position: absolute; left: 7px; right: 7px; height: 2px; background: var(--navy); transition: transform 0.3s var(--ease); }
+  .burger span:first-child { top: 13px; }
+  .burger span:last-child { top: 21px; }
+  .burger[aria-expanded="true"] span:first-child { transform: translateY(4px) rotate(45deg); }
+  .burger[aria-expanded="true"] span:last-child { transform: translateY(-4px) rotate(-45deg); }
+
+  @media (max-width: 860px) {
+    .burger { display: block; }
+    .links {
+      position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 0;
+      background: #fff; border-bottom: 1px solid var(--line); padding: 8px 16px 20px;
+      clip-path: inset(0 0 100% 0); transition: clip-path 0.45s var(--ease);
+    }
+    .links.open { clip-path: inset(0 0 0 0); }
+    .links { box-shadow: 0 16px 32px -20px #021a3359; padding: 4px 16px 12px; }
+    .links a { padding: 15px 4px; width: 100%; font-size: 1rem; }
+    .links a + a { border-top: 1px solid var(--line); }
+    .links a:not(.btn)::after { display: none; }
+    .links a:active { color: var(--gold-deep); }
+  }
+</style>
+
+<script>
+  const nav = document.querySelector<HTMLElement>(".nav")!;
+  const burger = nav.querySelector<HTMLButtonElement>(".burger")!;
+  const links = nav.querySelector<HTMLElement>(".links")!;
+  const anchors = [...links.querySelectorAll<HTMLAnchorElement>("a")];
+
+  addEventListener("scroll", () => nav.classList.toggle("scrolled", scrollY > 20), { passive: true });
+
+  const setOpen = (open: boolean) => {
+    links.classList.toggle("open", open);
+    burger.setAttribute("aria-expanded", String(open));
+  };
+  burger.addEventListener("click", () => setOpen(!links.classList.contains("open")));
+  anchors.forEach((a) => a.addEventListener("click", () => setOpen(false)));
+
+  // Highlight the link for the section currently in view
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      anchors.forEach((a) => a.classList.toggle("active", a.hash === "#" + e.target.id));
+    }
+  }, { rootMargin: "-45% 0px -50% 0px" });
+  document.querySelectorAll("section[id]").forEach((s) => io.observe(s));
+</script>

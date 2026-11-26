@@ -1,0 +1,103 @@
+---
+// Only Georgian + Latin subsets - keeps the inlined CSS small
+import "@fontsource/noto-sans-georgian/georgian-400.css";
+import "@fontsource/noto-sans-georgian/georgian-600.css";
+import "@fontsource/noto-sans-georgian/georgian-800.css";
+import "@fontsource/noto-sans-georgian/latin-400.css";
+import "@fontsource/noto-sans-georgian/latin-600.css";
+import "@fontsource/noto-sans-georgian/latin-800.css";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+
+// Absolute URLs need the live domain: set `site` in astro.config.mjs.
+// Until then canonical / og:url are omitted and images use relative paths.
+const site = Astro.site;
+const abs = (path: string) => (site ? new URL(path, site).href : path);
+const canonical = site ? new URL(Astro.url.pathname, site).href : undefined;
+
+const siteName = "შპს „უსაფრთხოება პირველი“";
+const ogImage = abs("/og-image.jpg");
+
+// Structured data - only facts published on the site
+const business = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: siteName,
+  alternateName: "უსაფრთხოება პირველი",
+  description,
+  slogan: "ზუსტად ვზომავთ, საიმედოდ ვიცავთ.",
+  ...(canonical && { url: canonical }),
+  logo: abs("/icon-512.png"),
+  image: ogImage,
+  email: "usafrtkhoeba1@gmail.com",
+  telephone: ["+995598335858", "+995591335858"],
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "თამარ მეფის ქ. #9",
+    addressLocality: "წალენჯიხა",
+    addressCountry: "GE",
+  },
+  areaServed: { "@type": "Country", name: "საქართველო" },
+  hasCredential: {
+    "@type": "EducationalOccupationalCredential",
+    name: "აკრედიტაციის მოწმობა № GAC-TL-0358",
+    credentialCategory: "სსტ ისო/იეკ 17025:2017/2018",
+    recognizedBy: { "@type": "Organization", name: "სსიპ აკრედიტაციის ერთიანი ეროვნული ორგანო - აკრედიტაციის ცენტრი" },
+  },
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "სერვისები",
+    itemListElement: [
+      "დამიწების კონტურების გამოცდა",
+      "ხმაურის დონის ინსტრუმენტული გაზომვა",
+      "ვიბრაციის დონის ინსტრუმენტული გაზომვა",
+    ].map((name) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name } })),
+  },
+};
+---
+
+<!doctype html>
+<html lang="ka">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Open Graph / social sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:locale" content="ka_GE" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="სპეციალისტი ხმაურის დონეს ზომავს ბგერის დონის მზომით" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap.xml" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(business)} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

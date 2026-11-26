@@ -1,0 +1,214 @@
+---
+// Scanned documents live in /public/certificates under their original names;
+// first-page previews in /public/cert-previews were rendered from those PDFs.
+const pdf = (name: string) => "/certificates/" + encodeURIComponent(name);
+
+const accreditation = {
+  file: pdf("აკრედიტაციის მოწმობა.pdf"),
+  preview: "/cert-previews/accreditation.webp",
+  kind: "აკრედიტაციის მოწმობა",
+  number: "№ GAC-TL-0358",
+  text: "მოწმობა ადასტურებს, რომ შპს „უსაფრთხოება პირველი“-ს საგამოცდო ლაბორატორია აკრედიტებულია სსტ ისო/იეკ 17025:2017/2018-ის მოთხოვნებთან შესაბამისობაზე, თანდართულ სფეროში.",
+  dates: [
+    { k: "გაცემულია", v: "2025 წლის 3 თებერვალს" },
+    { k: "ძალაშია", v: "2029 წლის 3 თებერვლამდე" },
+  ],
+  more: [{ k: "გამცემი", v: "სსიპ აკრედიტაციის ერთიანი ეროვნული ორგანო - აკრედიტაციის ცენტრი" }],
+};
+
+const issuer = "საქართველოს სტანდარტებისა და მეტროლოგიის ეროვნული სააგენტო, მეტროლოგიის ინსტიტუტი";
+const calibrations = [
+  {
+    file: pdf("ხმაურმზომის დაკალიბრების სერთიფიკატი.PDF"),
+    preview: "/cert-previews/noise.webp",
+    number: "№ GE/MI/07-02627-26",
+    instrument: "ბგერის დონის მზომი AS824",
+    serial: "ს/ნ 6099166",
+    date: { k: "დაკალიბრების თარიღი", v: "20.10.2026" },
+    more: [
+      { k: "გამცემი", v: issuer },
+      { k: "მეთოდი", v: "ხმაურმზომების დაკალიბრების პროცედურა GE/MI/07LP-7.2-15" },
+      { k: "გაცემის თარიღი", v: "28.10.2026" },
+    ],
+  },
+  {
+    file: pdf("ვიბრომეტრის დაკალიბრების სერთიფიკატი.PDF"),
+    preview: "/cert-previews/vibration.webp",
+    number: "№ GE/MI/05-02724-26",
+    instrument: "ვიბრომეტრი Benetech GM63A (ჩინეთი)",
+    serial: "ს/ნ 2775213",
+    date: { k: "დაკალიბრების თარიღი", v: "02.11.2026" },
+    more: [
+      { k: "გამცემი", v: issuer },
+      { k: "მეთოდი", v: "ვიბროაქსელერომეტრების დაკალიბრების პროცედურა GE/MI/05LP-7.2-04" },
+      { k: "გაცემის თარიღი", v: "05.11.2026" },
+    ],
+  },
+];
+
+const ext = '<path d="M7 17 17 7M9 7h8v8"/>';
+---
+
+<section id="certificates" class="certs">
+  <div class="container">
+    <div class="head">
+      <h2>სერტიფიკატები</h2>
+      <p class="sub">შპს „უსაფრთხოება პირველი“-ს საქმიანობა და ხელსაწყოები დადასტურებულია სახელმწიფო ორგანოების მიერ გაცემული ოფიციალური დოკუმენტებით.</p>
+    </div>
+
+    <!-- accreditation: the headline document -->
+    <article class="feature">
+      <a class="paper wide" href={accreditation.file} target="_blank" rel="noopener" aria-label={`${accreditation.kind} ${accreditation.number} - PDF`}>
+        <img src={accreditation.preview} alt={`${accreditation.kind} ${accreditation.number}`} width="560" height="396" loading="lazy" decoding="async" />
+      </a>
+      <div class="info">
+        <span class="kind">{accreditation.kind}</span>
+        <h3 class="num">{accreditation.number}</h3>
+        <p class="text">{accreditation.text}</p>
+        <dl class="chips">
+          {accreditation.dates.map((d) => <div><dt>{d.k}</dt><dd>{d.v}</dd></div>)}
+        </dl>
+        <div class="actions">
+          <a class="pdf" href={accreditation.file} target="_blank" rel="noopener">
+            PDF <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ext} />
+            <span class="sr"> (იხსნება ახალ ფანჯარაში)</span>
+          </a>
+          <details>
+            <summary>სრული ინფორმაცია</summary>
+            <dl class="more">{accreditation.more.map((m) => <div><dt>{m.k}</dt><dd>{m.v}</dd></div>)}</dl>
+          </details>
+        </div>
+      </div>
+    </article>
+
+    <!-- calibration certificates -->
+    <div class="pair">
+      {calibrations.map((c) => (
+        <article class="cal">
+          <a class="paper tall" href={c.file} target="_blank" rel="noopener" aria-label={`დაკალიბრების სერტიფიკატი ${c.number} - PDF`}>
+            <img src={c.preview} alt={`დაკალიბრების სერტიფიკატი ${c.number}`} width="560" height="792" loading="lazy" decoding="async" />
+          </a>
+          <div class="info">
+            <span class="kind">დაკალიბრების სერტიფიკატი</span>
+            <h3 class="num sm">{c.number}</h3>
+            <p class="inst">{c.instrument}<span class="tnum">{c.serial}</span></p>
+            <dl class="chips">
+              <div><dt>{c.date.k}</dt><dd class="tnum">{c.date.v}</dd></div>
+            </dl>
+            <div class="actions">
+              <a class="pdf" href={c.file} target="_blank" rel="noopener">
+                PDF <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ext} />
+                <span class="sr"> (იხსნება ახალ ფანჯარაში)</span>
+              </a>
+              <details>
+                <summary>სრული ინფორმაცია</summary>
+                <dl class="more">{c.more.map((m) => <div><dt>{m.k}</dt><dd>{m.v}</dd></div>)}</dl>
+              </details>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <p class="close">აკრედიტებული ლაბორატორია და მეტროლოგიის ინსტიტუტში დაკალიბრებული ხელსაწყოები იძლევა გარანტიას, რომ ჩვენი გაზომვების შედეგები ზუსტი და სანდოა.</p>
+  </div>
+</section>
+
+<style>
+  /* navy band with the same slanted edges as the light bands */
+  .certs {
+    background: radial-gradient(800px 500px at 15% 20%, #0b3554 0%, transparent 70%), var(--navy);
+    color: #fff;
+    clip-path: polygon(0 var(--slant), 100% 0, 100% calc(100% - var(--slant)), 0 100%);
+    padding-block: calc(96px + var(--slant));
+  }
+  .certs h2 { color: #fff; }
+  .certs .sub { color: #a9b6cc; }
+
+  /* scanned page shown as a sheet of paper */
+  .paper {
+    display: block; background: #fff; border-radius: 6px; overflow: hidden;
+    box-shadow: 0 2px 4px #0000004d, 0 24px 48px -16px #000000a6;
+    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+  }
+  .paper img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  @media (hover: hover) and (pointer: fine) { .paper:hover { transform: translateY(-6px) rotate(-0.6deg); box-shadow: 0 2px 4px #0000004d, 0 36px 60px -18px #000000b3; } }
+  .paper:active { transform: scale(0.98); }
+  .paper:focus-visible { outline-color: var(--gold); outline-offset: 6px; }
+
+  .feature {
+    display: grid; grid-template-columns: 1.15fr 1fr; gap: 32px 64px; align-items: center;
+    padding: 40px; border-radius: 20px; background: #ffffff0a; border: 1px solid #ffffff14;
+  }
+  .wide { aspect-ratio: 560 / 396; }
+
+  .kind { display: inline-block; font-size: 0.8rem; font-weight: 700; color: var(--navy); background: var(--gold); padding: 3px 10px; border-radius: 6px; margin-bottom: 14px; }
+  .num { font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.15; font-weight: 800; font-variant-numeric: tabular-nums; margin-bottom: 14px; }
+  .num.sm { font-size: 1.25rem; margin-bottom: 10px; }
+  .text { color: #c3cee0; font-size: 0.95rem; max-width: 34em; text-wrap: pretty; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .chips div { padding: 10px 14px; border-radius: 10px; background: #ffffff0f; border: 1px solid #ffffff1a; }
+  .chips dt { font-size: 0.75rem; color: #9fb0c9; }
+  .chips dd { font-size: 0.92rem; font-weight: 600; }
+
+  .actions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px 18px; margin-top: 24px; }
+  .pdf {
+    display: inline-flex; align-items: center; gap: 6px; flex: none;
+    font-size: 0.85rem; font-weight: 700; color: var(--navy); background: var(--gold);
+    padding: 8px 16px; border-radius: 999px; transition: background 0.2s;
+  }
+  @media (hover: hover) and (pointer: fine) { .pdf:hover { background: #ffa862; } }
+  .pdf:active { transform: scale(0.97); }
+  details { flex: 1 1 220px; }
+  summary {
+    list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 0; font-size: 0.85rem; font-weight: 600; color: #c3cee0; transition: color 0.2s;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after {
+    content: ""; width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    rotate: 45deg; translate: 0 -2px; transition: rotate 0.25s var(--ease), translate 0.25s var(--ease);
+  }
+  details[open] summary::after { rotate: 225deg; translate: 0 2px; }
+  @media (hover: hover) and (pointer: fine) { summary:hover { color: #fff; } }
+  .more { display: grid; gap: 10px; margin-top: 8px; padding-top: 12px; border-top: 1px solid #ffffff1a; }
+  .more dt { font-size: 0.75rem; color: #9fb0c9; }
+  .more dd { font-size: 0.88rem; color: #e3e9f2; }
+
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+  .cal {
+    display: grid; grid-template-columns: 150px 1fr; gap: 28px; align-items: start;
+    padding: 32px; border-radius: 20px; background: #ffffff0a; border: 1px solid #ffffff14;
+  }
+  .tall { aspect-ratio: 560 / 792; }
+  .inst { font-weight: 600; color: #e3e9f2; line-height: 1.45; }
+  .inst span { display: block; font-weight: 400; color: #a9b6cc; font-size: 0.9rem; }
+  .cal .chips { margin-top: 16px; }
+  .cal .actions { margin-top: 18px; }
+
+  .close {
+    margin: 56px auto 0; max-width: 40em; text-align: center; text-wrap: balance;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem); line-height: 1.6; font-weight: 600; color: #fff;
+  }
+
+  @media (max-width: 1060px) {
+    .pair { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 860px) {
+    .feature { grid-template-columns: 1fr; padding: 24px; }
+  }
+  @media (max-width: 760px) {
+    .certs { padding-block: calc(64px + var(--slant)); }
+  }
+  @media (max-width: 560px) {
+    .feature { padding: 20px; gap: 24px; }
+    .cal { grid-template-columns: 1fr; gap: 20px; padding: 20px; }
+    .tall { width: 132px; }
+    .num.sm { font-size: 1.12rem; }
+    .chips div { flex: 1 1 100%; }
+    .actions { gap: 4px 18px; align-items: center; }
+    details { flex-basis: 100%; }
+    .close { margin-top: 40px; font-size: 1rem; }
+  }
+</style>

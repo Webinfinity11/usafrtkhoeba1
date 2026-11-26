@@ -1,0 +1,98 @@
+<section id="about" class="section container">
+  <div class="split">
+    <div class="text">
+      <h2>ჩვენ შესახებ</h2>
+      <p class="first">
+        ვართ კომპანია, რომელიც ამოწმებს ელექტროუსაფრთხოებას და ინსტრუმენტულად ზომავს სამუშაო და საცხოვრებელი გარემოს
+        ფიზიკურ ფაქტორებს. ჩვენი მიზანია, ობიექტები იყოს უსაფრთხო ადამიანებისთვის და აკმაყოფილებდეს მოქმედი ნორმების მოთხოვნებს.
+      </p>
+      <p>
+        გაზომვებს ვატარებთ მხოლოდ კალიბრირებული ხელსაწყოებით, აღიარებული მეთოდიკების მიხედვით. შედეგებს ვაფორმებთ ოფიციალური
+        დოკუმენტაციით, რომელიც გამოდგება როგორც შიდა კონტროლისთვის, ისე მაკონტროლებელი ორგანოებისთვის.
+      </p>
+    </div>
+
+    <!-- the full mark inside a gauge dial; the dial "measures" once when scrolled into view -->
+    <div class="mark" aria-hidden="true">
+      <svg class="dial" viewBox="0 0 400 400">
+        <circle cx="200" cy="200" r="190" class="ring r1" />
+        <circle cx="200" cy="200" r="150" class="ring r2" />
+        <circle cx="200" cy="200" r="110" class="ring r3" />
+        <path d="M54 262 A158 158 0 0 1 200 42" class="arc" pathLength="1" />
+        <circle cx="200" cy="42" r="5" class="tip" />
+      </svg>
+      <img src="/logo-hero.webp" alt="" width="508" height="640" loading="lazy" decoding="async" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .split { display: grid; grid-template-columns: 1.35fr 1fr; gap: 48px 72px; align-items: center; }
+  h2 { margin-bottom: 26px; }
+  .text p { color: var(--muted); font-size: 1.02rem; max-width: 38em; text-wrap: pretty; }
+  .text p + p { margin-top: 16px; }
+  .text .first { color: var(--navy); font-size: clamp(1.12rem, 1.6vw, 1.3rem); line-height: 1.6; font-weight: 600; }
+
+  .mark { position: relative; display: grid; place-items: center; aspect-ratio: 1; }
+  .dial { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .ring { fill: none; stroke: #d6dde8; stroke-width: 1; transform-box: view-box; transform-origin: 200px 200px; }
+  .r2 { stroke-dasharray: 2 8; stroke-width: 2; stroke: #c9d2df; }
+  .arc { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+  .tip { fill: var(--gold); transform-box: fill-box; transform-origin: center; }
+  .mark img {
+    position: relative; width: 46%; height: auto;
+    filter: drop-shadow(0 18px 28px #021a3340) drop-shadow(0 4px 8px #021a3326);
+  }
+
+  /* ambient: the dotted ring turns slowly, like a dial scale */
+  @media (prefers-reduced-motion: no-preference) {
+    .r2 { animation: turn 80s linear infinite; }
+  }
+  @keyframes turn { to { transform: rotate(360deg); } }
+
+  /* entrance - armed by the script only when JS runs and motion is allowed */
+  .mark.armed .ring,
+  .mark.armed img,
+  .mark.armed .tip { opacity: 0; }
+  .mark.armed .arc { stroke-dashoffset: 1; }
+
+  .mark.armed.go .ring,
+  .mark.armed.go img,
+  .mark.armed.go .tip { opacity: 1; }
+  .mark.armed.go .arc { stroke-dashoffset: 0; }
+  .mark.armed.go .ring { animation: ring-in 0.9s var(--ease-out) both; }
+  .mark.armed.go .r1 { animation-delay: 0s; }
+  .mark.armed.go .r2 { animation: ring-in 0.9s var(--ease-out) 0.06s both, turn 80s linear 1s infinite; }
+  .mark.armed.go .r3 { animation-delay: 0.12s; }
+  .mark.armed.go img { animation: mark-in 0.7s var(--ease-out) 0.15s backwards; }
+  .mark.armed.go .arc { animation: sweep 1.4s var(--ease-out) 0.35s both; }
+  .mark.armed.go .tip { animation: tip-in 0.4s var(--ease-out) 1.45s both; }
+
+  @keyframes ring-in { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: none; } }
+  @keyframes mark-in { from { opacity: 0; transform: translateY(12px) scale(0.96); } to { opacity: 1; transform: none; } }
+  @keyframes sweep { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes tip-in { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: none; } }
+
+  /* logo lifts slightly on hover, pointer devices only */
+  @media (hover: hover) and (pointer: fine) {
+    .mark img { transition: transform 0.4s var(--ease-out); }
+    .mark:hover img { transform: translateY(-4px); }
+  }
+
+  @media (max-width: 860px) {
+    .split { grid-template-columns: 1fr; }
+    .mark { max-width: 300px; width: 100%; margin-inline: auto; }
+  }
+</style>
+
+<script>
+  const mark = document.querySelector<HTMLElement>("#about .mark")!;
+  // Only hide-then-reveal when motion is allowed and the dial starts off-screen
+  if (matchMedia("(prefers-reduced-motion: no-preference)").matches && mark.getBoundingClientRect().top > innerHeight * 0.85) {
+    mark.classList.add("armed");
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { mark.classList.add("go"); io.disconnect(); }
+    }, { threshold: 0.4 });
+    io.observe(mark);
+  }
+</script>
